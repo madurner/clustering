@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from kmeans import assign_data
 #from ex_em_for_gmm import em_gmm
 #from clustering_eval import evaluate
 from scipy import stats
@@ -119,7 +118,7 @@ def em_gmm( X, K, max_iter=100, threshold=1e-2, plot=False):
         means = utils.compute_random_means(d_min, _range, K)
         covs = np.array([np.eye(d) for _ in range(K)])
         pi = np.ones(K) / K
-        assignment, _ = assign_data(X, means)
+        assignment, _ = utils.assign_data(X, means)
 
         if plot:
             rgba_colors = np.array([cmap(float(a + 1) / K) for a in assignment])

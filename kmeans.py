@@ -7,6 +7,8 @@ from scipy.spatial.distance import cdist
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
+import utils
+
 def kmeans_compression(img, K=5):
     num_rows, num_cols, num_channels = img.shape
 
@@ -26,33 +28,6 @@ def kmeans_compression(img, K=5):
     plt.imshow(img_compressed, cmap='gray')
     plt.show()
 
-
-#TODO into utils
-def assign_data(data, means, dist_type='sqeuclidean'):
-    """ assigns each data point to a cluster(-mean)
-
-    Args:
-        data (): [nxd] matrix of n samples with d prperties each; 
-        means (): [Kxd] matrix of K means;
-        dist_type (string): distance type; default: sqeuclidean
-
-    Return:
-        assignment:
-        cost: sum of distances between each data point and its corresponding cluster-mean
-    """
-    n, feat_dim = data.shape
-
-    t = time()
-    #compute distance between every data point and mean value
-    dist = cdist(data, means, dist_type)
-
-    # for each data point: smallest distance -> cluster assignment
-    assignment = np.argmin(dist, axis=1)
-    cost = np.sum(dist[np.arange(n), assignment])
-
-    t = time() - t
-    print('Datapoints assigned. Took %fs, cost=%f' % (t, cost))
-    return assignment, cost
 
 def kmeans(data, K, max_iter=100, threshold = 1e-2, ax1=None, ax2=None):
     
@@ -74,6 +49,7 @@ def kmeans(data, K, max_iter=100, threshold = 1e-2, ax1=None, ax2=None):
     _range = d_max - d_min
     means = np.array([d_min + np.random.rand(feat_dim)*_range for _ in range(K)])
 
+
     # Convergence criteria
     converged = False
     old_cost, old_meanshift = np.infty, 0
@@ -87,12 +63,12 @@ def kmeans(data, K, max_iter=100, threshold = 1e-2, ax1=None, ax2=None):
     for i in range(max_iter):
         print('Iteration %d' % i)
 
-        assignment, cost = assign_data(data, means)
+        assignment, cost = utils.assign_data(data, means)
 
         # Re-initialize means if a cluster has no samples assigned to it
         while np.unique(assignment).shape[0] != K:
             means = np.array([d_min + np.random.rand(feat_dim)*_range for _ in range(K)])
-            assignment, cost = assign_data(data, means)
+            assignment, cost = utils.assign_data(data, means)
 
         # Update cluster-means
         old_means = means.copy()

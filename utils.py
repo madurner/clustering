@@ -1,6 +1,30 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 import numpy as np
+from scipy.spatial.distance import cdist
+
+def assign_data(data, means, dist_type='sqeuclidean'):
+    """ assigns each data point to a cluster(-mean)
+
+    Args:
+        data (): [nxd] matrix of n samples with d prperties each; 
+        means (): [Kxd] matrix of K means;
+        dist_type (string): distance type; default: sqeuclidean
+
+    Return:
+        assignment:
+        cost: sum of distances between each data point and its corresponding cluster-mean
+    """
+    n, feat_dim = data.shape
+
+    #compute distance between every data point and mean value
+    dist = cdist(data, means, dist_type)
+
+    # for each data point: smallest distance -> cluster assignment
+    assignment = np.argmin(dist, axis=1)
+    cost = np.sum(dist[np.arange(n), assignment])
+
+    return assignment, cost
 
 def compute_random_means(_min, _range, K):
     d = len(_min)
