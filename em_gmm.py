@@ -7,11 +7,6 @@ from scipy import stats
 from matplotlib import cm
 import utils
 
-#TODO put this into utils
-def compute_random_means(_min, _range, K):
-    d = len(_min)
-    means = np.array([_min + np.random.rand(d)*_range for _ in range(K)])
-    return means
 
 def compute_responsibilities(data, means, covs, pi):
     """ Expectation step
@@ -121,7 +116,7 @@ def em_gmm( X, K, max_iter=100, threshold=1e-2, plot=False):
     restart = True
     while restart:
         # Initialize means randomly within the data range
-        means = compute_random_means(d_min, _range, K)
+        means = utils.compute_random_means(d_min, _range, K)
         covs = np.array([np.eye(d) for _ in range(K)])
         pi = np.ones(K) / K
         assignment, _ = assign_data(X, means)

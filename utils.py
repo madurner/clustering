@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 import numpy as np
 
+def compute_random_means(_min, _range, K):
+    d = len(_min)
+    means = np.array([_min + np.random.rand(d)*_range for _ in range(K)])
+    return means
+
 def cond_plot(it, title=None, data=None, covs=None, colors=None, marker='o', art=None, ax=None):
     if art is not None:
         [a.remove() for a in art]
