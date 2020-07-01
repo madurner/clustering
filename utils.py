@@ -60,3 +60,46 @@ def plot_ellipse(ax, mean, cov, color):
     ell.set_alpha(0.5)
     ax.add_artist(ell)
     return ell
+
+def evaluate( X, Y, Z ):
+    """ Evaluate an assignment, by first finding the correct label permutation
+
+    Args:
+        X - dxm matrix of data
+        Y - n-dimensional vector of true labels
+        Z - n-dimensional vector of predicted labels
+    """
+
+    num_clusters = len(set(Y))
+    num_assigned = len(set(Z))
+    assert num_assigned == num_clusters , 'Assignment has different number of classes: %d' %  num_assigned
+
+    # Compute the true and assigned cluster means
+    d, n = np.shape(X)
+    true_means = np.zeros(shape=(d, num_clusters))
+    assigned_means = np.zeros(shape=(d, num_clusters))
+    for k in range(num_clusters):
+        true_means[:, k] = np.mean(X[:, np.array([y==k for y in Y])], axis=1)
+        assigned_means[:, k] = np.mean(X[:, np.array([y==k for y in Z])], axis=1)
+
+    # The label assignment is a permutation of the true label assiggnment, find the min-cost permutation
+    import itertools
+    min_perm_cost = np.inf
+    min_cost_perm = tuple(range(num_clusters))
+    for perm in itertools.permutations(range(num_clusters)):
+        perm_means = assigned_means[:, perm]
+        perm_cost = 0
+        for k in range(num_clusters):
+            diff = true_means[:, k] - perm_means[:, k]
+            perm_cost += np.dot(diff, diff)
+
+        if perm_cost < min_perm_cost:
+            min_perm_cost = perm_cost
+            min_cost_perm = perm
+
+    inv_perm = [0] * num_clusters
+    for i, x in enumerate(min_cost_perm):
+        inv_perm[x] = i
+    A = [inv_perm[z] for z in Z]
+    acc = np.mean([a==y for a,y in zip(A, Y)])
+    return acc
