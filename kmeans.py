@@ -26,12 +26,6 @@ def kmeans_compression(img, K=5):
     plt.imshow(img_compressed, cmap='gray')
     plt.show()
 
-def main():
-    img_file = 'data/mona-lisa.jpg'
-    img = imageio.imread(img_file)
-
-    kmeans_compression(img)
-
 
 def assign_data(data, means, dist_type='sqeuclidean'):
     """ assigns each data point to a cluster(-mean)
@@ -139,6 +133,12 @@ def kmeans(data, K, max_iter=100, threshold = 1e-2, ax1=None, ax2=None):
         print('Did not converge after ', i, ' iterations')
 
     return assignment
+
+def main():
+    img_file = 'data/mona-lisa.jpg'
+    img = imageio.imread(img_file)
+
+    kmeans_compression(img)
 
 
 if __name__ == '__main__':
