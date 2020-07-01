@@ -27,6 +27,7 @@ def kmeans_compression(img, K=5):
     plt.show()
 
 
+#TODO into utils
 def assign_data(data, means, dist_type='sqeuclidean'):
     """ assigns each data point to a cluster(-mean)
 
