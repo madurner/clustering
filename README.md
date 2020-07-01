@@ -1,2 +1,2 @@
 # clustering
-minor codes for clustering
+small code snippets for clustering algorithms 
